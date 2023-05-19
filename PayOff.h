@@ -6,7 +6,7 @@ class PayOff
 public:
    PayOff(){};
    virtual double payoff(double spot_price) const = 0;
-   ~PayOff(){};
+   virtual ~PayOff(){};
 private:
 };
 

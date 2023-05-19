@@ -1,6 +1,8 @@
 #include<iostream>
 #include<cmath>
 
+#include "CallPut.h"
+
 double NormalRand();
 
 int main()
@@ -21,11 +23,13 @@ int main()
    double P_avg = 0; 
    double S_T, n;
 
+   CallOption call(T, K);
+
    for(int i = 0; i< SAMPLE_SIZE; i++)
    {
       n = NormalRand();
       S_T = S_0 * exp( drift + std_dev * n );
-      P_avg += std::max(0., S_T - K);
+      P_avg += call.payoff(S_T);
    } 
 
    P_avg = exp(r * T) * P_avg / SAMPLE_SIZE;
