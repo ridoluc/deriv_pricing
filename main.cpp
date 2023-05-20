@@ -1,54 +1,58 @@
 #include<iostream>
 #include<cmath>
 
+
+#include "RandomVariable.h"
+#include "MCEstimator.h"
+#include "Stock.h"
+#include "StockPath.h"
 #include "CallPut.h"
 
-double NormalRand();
+
 
 int main()
 {
 
-   const int SAMPLE_SIZE = 100000000;
+   const int SAMPLE_SIZE = 10000000;
 
    // Pricing constants
-   const double   r        = 0.05;
-   const double   sigma    = 0.1;
-   const double   S_0      = 1.0;
-   const double   K        = 1.0;
-   const double   T        = 1.0;
+   const double   r        = 0.05;     // Risk-free rate
+   const double   sigma    = 0.05;      // root variance
+   const double   S_0      = 3.0;      // initial stock value
 
-   const double   drift    = (r - 0.5 * sigma * sigma) * T;
-   const double   std_dev  = sigma * sqrt(T);
 
-   double P_avg = 0; 
-   double S_T, n;
+   const double   strike   = 3.0;
+   const double   expiry   = 1.0;
 
-   CallOption call(T, K);
+   const CallOption call(expiry, strike);
+   const PutOption put(expiry, strike);
 
-   for(int i = 0; i< SAMPLE_SIZE; i++)
-   {
-      n = NormalRand();
-      S_T = S_0 * exp( drift + std_dev * n );
-      P_avg += call.payoff(S_T);
-   } 
+   // const Stock stck;
 
-   P_avg = exp(r * T) * P_avg / SAMPLE_SIZE;
+   double resCall = MCEstimator(
+      call,
+      expiry,
+      r,
+      sigma,
+      S_0,
+      SAMPLE_SIZE
+   );
    
-   std::cout << P_avg << '\n';
+   double resPut = MCEstimator(
+      put,
+      expiry,
+      r,
+      sigma,
+      S_0,
+      SAMPLE_SIZE
+   );
+
+
+   std::cout << "Call price:   " << resCall  << '\n';
+   // std::cout << "Put price:    " << resPut   << '\n';
+   // std::cout << "Strike PV:    " << strike * exp(-r * expiry)   << '\n';
+   // std::cout << "Check put/call parity:" << resCall - resPut + strike * exp(-r * expiry)   << '\n';
+
 
 }
 
-double UniformRand()
-{
-   return (double) std::rand()/RAND_MAX;
-}
-double NormalRand()
-{
-   double u1 = UniformRand();
-   double u2 = UniformRand();
-
-   double r    = std::sqrt( -2 * std::log(u1) );
-   double n1   = r * cos(2* M_PI * u2);
-
-   return n1;
-}
