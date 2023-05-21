@@ -17,42 +17,26 @@ int main()
 
    // Pricing constants
    const double   r        = 0.05;     // Risk-free rate
-   const double   sigma    = 0.05;      // root variance
+   const double   sigma    = 0.05;     // root variance
    const double   S_0      = 3.0;      // initial stock value
 
 
    const double   strike   = 3.0;
    const double   expiry   = 1.0;
 
+   Stock stock(S_0, r, sigma);
+   StockPath stck_path(stock, expiry, 1);
    const CallOption call(expiry, strike);
-   const PutOption put(expiry, strike);
-
-   // const Stock stck;
 
    double resCall = MCEstimator(
       call,
-      expiry,
+      stck_path,
       r,
-      sigma,
-      S_0,
-      SAMPLE_SIZE
-   );
-   
-   double resPut = MCEstimator(
-      put,
-      expiry,
-      r,
-      sigma,
-      S_0,
       SAMPLE_SIZE
    );
 
 
    std::cout << "Call price:   " << resCall  << '\n';
-   // std::cout << "Put price:    " << resPut   << '\n';
-   // std::cout << "Strike PV:    " << strike * exp(-r * expiry)   << '\n';
-   // std::cout << "Check put/call parity:" << resCall - resPut + strike * exp(-r * expiry)   << '\n';
-
 
 }
 

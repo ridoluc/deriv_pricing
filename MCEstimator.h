@@ -2,34 +2,27 @@
 #define MCESTIMATOR_H
 
 #include"PayOff.h"
+#include"StockPath.h"
 
 double MCEstimator(
-                     const PayOff &    claim,
-                     const double      T,
-                     const double      r,
-                     const double      sigma,
-                     const double      S_0,
-                     const unsigned int sample )
+                     const PayOff &       claim,
+                     StockPath &          stock,
+                     const double         rf_rate,
+                     const unsigned int   sample_size)
 {
 
    RandVar r_var;
 
-
-   const double   drift    = (r - 0.5 * sigma * sigma) * T;
-   const double   std_dev  = sigma * sqrt(T);
-
    double P_avg = 0; 
-   double S_T, n;
+   double S_T;
 
-
-   for(int i = 0; i< sample; i++)
+   for(int i = 0; i< sample_size; i++)
    {
-      n = r_var.getNormal();
-      S_T = S_0 * exp( drift + std_dev * n );
+      S_T = stock.generatePath().back();
       P_avg += claim.payoff(S_T);
    } 
 
-   P_avg = exp(- r * T) * P_avg / sample;
+   P_avg = exp(- rf_rate * stock.getPeriod()) * P_avg / sample_size;
 
    return P_avg;
 }

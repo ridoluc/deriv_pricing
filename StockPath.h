@@ -9,8 +9,9 @@ class StockPath : public Stock
 {
 public:
    StockPath(const Stock & _stock, double _period, unsigned long _steps);
-
+   const double getPeriod() {return period_length;};
    std::vector<double> generatePath();
+
 
 private:
    unsigned long  steps;
