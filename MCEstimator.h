@@ -4,8 +4,7 @@
 #include"PayOff.h"
 #include"StockPath.h"
 
-double MCEstimator(
-                     const PayOff &       claim,
+double MCEstimator(  const PayOff &       claim,
                      StockPath &          stock,
                      const double         rf_rate,
                      const unsigned int   sample_size)
